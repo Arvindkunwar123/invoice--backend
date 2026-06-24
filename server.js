@@ -4,7 +4,7 @@ const cors = require("cors");
 const connectDB = require("./db");
 const Invoice = require("./invoiceModel");
 const extractInvoiceData = require("./ocrService");
-const convertPdfToImage = require("./pdfToImage");
+//const convertPdfToImage = require("./pdfToImage");
 const exportToExcel = require("./excelExport");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -128,10 +128,15 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     // ================= STEP 2 — RUN OCR IN BACKGROUND =================
 
     let imagePath = newPath;
-
     if (req.file.mimetype === "application/pdf") {
-      imagePath = await convertPdfToImage(newPath);
-    }
+    return res.status(400).json({
+        message: "PDF upload temporarily disabled"
+    });
+}
+
+    //if (req.file.mimetype === "application/pdf") {
+     // imagePath = await convertPdfToImage(newPath);
+   // }
 
     const data = await extractInvoiceData(imagePath);
 
@@ -161,6 +166,7 @@ if (data.amount > 100000) {
 if (data.amount > 0 && data.amount < 100) {
   fraudFlag = "SUSPICIOUS";
 }
+let status = "APPROVED";
 if (fraudFlag === "FRAUD") {
   status = "MANUAL_REVIEW";
 }
