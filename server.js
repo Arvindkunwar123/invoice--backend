@@ -181,8 +181,6 @@ if (fraudFlag !== "NONE") {
   });
 }
 
-    let status = "APPROVED";
-
     if (confidence < 75) status = "MANUAL_REVIEW";
     if (data.amount <= 0) status = "REJECTED";
     // Signature rule
